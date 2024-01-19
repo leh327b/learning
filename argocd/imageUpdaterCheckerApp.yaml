@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: instance-checker
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: leh327b/aws-ec2-instance-checker:*
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
+    argocd-image-updater.argoproj.io/git-branch: main
+spec:
+    project: default
+    source:
+      repoURL: https://github.com/leh327b/k8s_cicd_overview
+      targetRevision: HEAD
+      path: helm/aws-ec2-instance-checker
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: aws-ec2-instance-checker
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: true
+
